@@ -1,5 +1,6 @@
 package net.sytes.codeline.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -101,6 +102,43 @@ public class UserDaoImpl implements UserDao {
 				.add(Restrictions.eq("userId", id))
 				.uniqueResult();
 		return currentUser;
+	}
+	
+	@Override
+	@Transactional
+	public User login(User user) {
+		User currentUser = currentUser(user);
+		
+		if (currentUser == null) {
+			User notExisting = new User();
+			notExisting.setUsername("null");
+			return notExisting;
+		}
+		if (currentUser.getPassword().equals(user.getPassword())) {
+			return currentUser;
+		}
+		User wrongPassword = new User();
+		wrongPassword.setUsername("wrong");
+		return wrongPassword;
+	}
+	
+	@Override
+	@Transactional
+	public List<User> getContactsForDomain(User user) {
+		String domainParams[] = user.getUsername().split("@");
+		String domain = domainParams[1];
+		
+		List<User> allUsers = getAllUsers();
+		List<User> contacts = new ArrayList<>();
+		
+		for (User usr : allUsers) {
+			if (usr.getDomainId().getDomainCode().equals(domain) 
+					&& !usr.getUsername().equals(user.getUsername())) {
+				contacts.add(usr);
+			}
+		}
+		
+		return contacts;
 	}
 
 }

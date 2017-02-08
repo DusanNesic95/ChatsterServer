@@ -48,4 +48,14 @@ public class UserController {
 		return userDao.getUserById(user.getUserId());
 	}
 	
+	@RequestMapping(value="/login", method=RequestMethod.POST)
+	public User login(@RequestBody User user) {
+		return userDao.login(user);
+	}
+	
+	@RequestMapping(value="/getcontactsfordomain", method=RequestMethod.POST)
+	public List<User> getContactsForDomain(@RequestBody User user) {
+		return userDao.getContactsForDomain(user);
+	}
+	
 }

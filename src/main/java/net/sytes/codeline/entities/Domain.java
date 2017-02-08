@@ -11,8 +11,8 @@ import javax.persistence.Table;
 public class Domain {
 
 	private int domainId;
-	private int domainName;
-	private int domainCode;
+	private String domainName;
+	private String domainCode;
 	
 	@Id
 	@GeneratedValue
@@ -25,18 +25,18 @@ public class Domain {
 	}
 	
 	@Column(name="DOMAIN_NAME")
-	public int getDomainName() {
+	public String getDomainName() {
 		return domainName;
 	}
-	public void setDomainName(int domainName) {
+	public void setDomainName(String domainName) {
 		this.domainName = domainName;
 	}
 	
 	@Column(name="DOMAIN_CODE")
-	public int getDomainCode() {
+	public String getDomainCode() {
 		return domainCode;
 	}
-	public void setDomainCode(int domainCode) {
+	public void setDomainCode(String domainCode) {
 		this.domainCode = domainCode;
 	}
 	
