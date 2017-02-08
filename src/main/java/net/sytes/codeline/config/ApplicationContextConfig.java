@@ -14,10 +14,12 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import net.sytes.codeline.entities.Demo;
-
-import net.sytes.codeline.dao.DemoDao;
-import net.sytes.codeline.dao.DemoDaoImpl;
+import net.sytes.codeline.dao.DomainDao;
+import net.sytes.codeline.dao.DomainDaoImpl;
+import net.sytes.codeline.dao.UserDao;
+import net.sytes.codeline.dao.UserDaoImpl;
+import net.sytes.codeline.entities.Domain;
+import net.sytes.codeline.entities.User;
 
 /**
  * @author Dusan Nesic
@@ -40,7 +42,7 @@ public class ApplicationContextConfig {
 	public DataSource getDataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/db_indocool");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/chatster");
 		dataSource.setUsername("root");
 		dataSource.setPassword("");
 		dataSource.addConnectionProperty("useUnicode", "yes");
@@ -59,7 +61,7 @@ public class ApplicationContextConfig {
 	@Bean(name="sessionFactory")
 	public SessionFactory getSessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-		sessionBuilder.addAnnotatedClasses(Demo.class);
+		sessionBuilder.addAnnotatedClasses(Domain.class, User.class);
 		sessionBuilder.addProperties(getHibernateProperties());
 		
 		return sessionBuilder.buildSessionFactory();
@@ -98,9 +100,15 @@ public class ApplicationContextConfig {
 	 * Demo method of creating beans
 	 */
 	@Autowired
-	@Bean(name="demoDao")
-	public DemoDao getDemoDao(SessionFactory sessionFactory) {
-		return new DemoDaoImpl(sessionFactory);
+	@Bean(name="domainDao")
+	public DomainDao getDomainDao(SessionFactory sessionFactory) {
+		return new DomainDaoImpl(sessionFactory);
+	}
+	
+	@Autowired
+	@Bean(name="userDao")
+	public UserDao getUserDao(SessionFactory sessionFactory) {
+		return new UserDaoImpl(sessionFactory);
 	}
 
 }
