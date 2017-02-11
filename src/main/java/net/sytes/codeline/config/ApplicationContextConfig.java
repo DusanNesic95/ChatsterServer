@@ -10,15 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import net.sytes.codeline.dao.DomainDao;
 import net.sytes.codeline.dao.DomainDaoImpl;
+import net.sytes.codeline.dao.MessagesDao;
+import net.sytes.codeline.dao.MessagesDaoImpl;
 import net.sytes.codeline.dao.UserDao;
 import net.sytes.codeline.dao.UserDaoImpl;
 import net.sytes.codeline.entities.Domain;
+import net.sytes.codeline.entities.Messages;
 import net.sytes.codeline.entities.User;
 
 /**
@@ -61,7 +64,7 @@ public class ApplicationContextConfig {
 	@Bean(name="sessionFactory")
 	public SessionFactory getSessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-		sessionBuilder.addAnnotatedClasses(Domain.class, User.class);
+		sessionBuilder.addAnnotatedClasses(Domain.class, User.class, Messages.class);
 		sessionBuilder.addProperties(getHibernateProperties());
 		
 		return sessionBuilder.buildSessionFactory();
@@ -75,8 +78,10 @@ public class ApplicationContextConfig {
 	 */
 	private Properties getHibernateProperties() {
 		Properties properties = new Properties();
-		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.show_sql", "false");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		properties.put("hbm2ddl.auto", "create");
+		properties.put("hibernate.id.new_generator_mappings", "false");
 		
 		return properties;
 	}
@@ -109,6 +114,12 @@ public class ApplicationContextConfig {
 	@Bean(name="userDao")
 	public UserDao getUserDao(SessionFactory sessionFactory) {
 		return new UserDaoImpl(sessionFactory);
+	}
+	
+	@Autowired
+	@Bean(name="messagesDao")
+	public MessagesDao getMessagesDao(SessionFactory sessionFactory) {
+		return new MessagesDaoImpl(sessionFactory);
 	}
 
 }
