@@ -1,6 +1,7 @@
 package net.sytes.codeline.dao;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -34,11 +35,22 @@ public class MessagesDaoImpl implements MessagesDao {
 	@Override
 	@Transactional
 	public List<Messages> getMessages(User from, User to) {
-		return sessionFactory.getCurrentSession()
+		List<Messages> allMessages = new ArrayList<>();
+		List<Messages> myMessages = sessionFactory.getCurrentSession()
 				.createCriteria(Messages.class)
 				.add(Restrictions.eq("fromUserId", from))
 				.add(Restrictions.eq("toUserId", to))
 				.list();
+		List<Messages> responseMessages = sessionFactory.getCurrentSession()
+				.createCriteria(Messages.class)
+				.add(Restrictions.eq("fromUserId", to))
+				.add(Restrictions.eq("toUserId", from))
+				.list();
+
+		allMessages.addAll(myMessages);
+		allMessages.addAll(responseMessages);
+		
+		return allMessages;
 	}
 
 }
